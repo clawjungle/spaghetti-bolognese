@@ -1468,6 +1468,14 @@
                     return;
                 }
 
+                if (this.typeConfig.type === 'PTERODACTYL' && pastaPackSprite.complete && pastaPackSprite.naturalWidth > 0) {
+                    var bob = this.currentFrame === 1 ? -2 : 0;
+                    this.canvasCtx.drawImage(pastaPackSprite,
+                        this.xPos, this.yPos + bob,
+                        this.typeConfig.width, this.typeConfig.height);
+                    return;
+                }
+
                 var sourceWidth = this.typeConfig.width;
                 var sourceHeight = this.typeConfig.height;
 
@@ -1565,6 +1573,8 @@
     var obstacleTheme = window.localStorage.getItem(OBSTACLE_THEME_KEY) || 'forkknife';
     var tomatoCanSprite = new Image();
     tomatoCanSprite.src = 'assets/tomato-can.jpg';
+    var pastaPackSprite = new Image();
+    pastaPackSprite.src = 'assets/pasta-pack.jpg';
     window.setObstacleTheme = function (theme) {
         obstacleTheme = theme || 'forkknife';
         window.localStorage.setItem(OBSTACLE_THEME_KEY, obstacleTheme);
