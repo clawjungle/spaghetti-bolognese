@@ -1391,7 +1391,17 @@
 
                     ctx.save();
 
-                    if (obstacleTheme === 'meatball') {
+                    if (obstacleTheme === 'packet') {
+                        var packetSprite = this.typeConfig.type === 'CACTUS_LARGE' ? packetTallSprite : packetSmallSprite;
+                        if (packetSprite.complete && packetSprite.naturalWidth > 0) {
+                            ctx.drawImage(packetSprite, x, y, w, h);
+                        } else {
+                            ctx.fillStyle = '#f6d365';
+                            ctx.fillRect(x + w * 0.18, y + h * 0.08, w * 0.64, h * 0.9);
+                            ctx.fillStyle = '#c62828';
+                            ctx.fillRect(x + w * 0.22, y + h * 0.42, w * 0.56, h * 0.42);
+                        }
+                    } else if (obstacleTheme === 'meatball') {
                         ctx.fillStyle = '#7a3d1f';
                         ctx.fillRect(x + w * 0.46, y + h * 0.05, w * 0.08, h * 0.95);
                         var r = Math.max(5, Math.min(w, h) * 0.22);
@@ -1468,12 +1478,14 @@
                     return;
                 }
 
-                if (this.typeConfig.type === 'PTERODACTYL' && pastaPackSprite.complete && pastaPackSprite.naturalWidth > 0) {
-                    var bob = this.currentFrame === 1 ? -2 : 0;
-                    this.canvasCtx.drawImage(pastaPackSprite,
-                        this.xPos, this.yPos + bob,
-                        this.typeConfig.width, this.typeConfig.height);
-                    return;
+                if (this.typeConfig.type === 'PTERODACTYL') {
+                    var pteroFrame = this.currentFrame === 1 ? tinFlyFrame2 : tinFlyFrame1;
+                    if (pteroFrame.complete && pteroFrame.naturalWidth > 0) {
+                        this.canvasCtx.drawImage(pteroFrame,
+                            this.xPos, this.yPos,
+                            this.typeConfig.width, this.typeConfig.height);
+                        return;
+                    }
                 }
 
                 var sourceWidth = this.typeConfig.width;
@@ -1570,13 +1582,19 @@
 
     // Obstacle theme controls for custom visuals on cactus slots.
     var OBSTACLE_THEME_KEY = 'trex_obstacle_theme';
-    var obstacleTheme = window.localStorage.getItem(OBSTACLE_THEME_KEY) || 'forkknife';
+    var obstacleTheme = window.localStorage.getItem(OBSTACLE_THEME_KEY) || 'packet';
     var tomatoCanSprite = new Image();
     tomatoCanSprite.src = 'assets/tomato-can.jpg';
-    var pastaPackSprite = new Image();
-    pastaPackSprite.src = 'assets/pasta-pack.jpg';
+    var packetSmallSprite = new Image();
+    packetSmallSprite.src = 'assets/packet-small.png';
+    var packetTallSprite = new Image();
+    packetTallSprite.src = 'assets/packet-tall.png';
+    var tinFlyFrame1 = new Image();
+    tinFlyFrame1.src = 'assets/tin-fly-frame1.png';
+    var tinFlyFrame2 = new Image();
+    tinFlyFrame2.src = 'assets/tin-fly-frame2.png';
     window.setObstacleTheme = function (theme) {
-        obstacleTheme = theme || 'forkknife';
+        obstacleTheme = theme || 'packet';
         window.localStorage.setItem(OBSTACLE_THEME_KEY, obstacleTheme);
     };
 
