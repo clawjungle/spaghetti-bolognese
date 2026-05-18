@@ -3,95 +3,207 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Josh's Spaghetti Bolognese</title>
+  <title>Bolognese Runner</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { overflow-x: hidden; }
+    canvas { image-rendering: pixelated; }
+  </style>
 </head>
-<body class="bg-orange-50 text-stone-800 min-h-screen">
-  <main class="max-w-4xl mx-auto px-4 py-10">
-    <header class="mb-8">
-      <h1 class="text-4xl font-bold tracking-tight">Josh's Spaghetti Bolognese</h1>
-      <p class="mt-2 text-stone-600">A rich, comforting bolognese with practical home-cook timing and seasoning tips.</p>
-      <div class="mt-4 flex flex-wrap gap-2 text-sm">
-        <span class="px-3 py-1 rounded-full bg-white shadow">Prep: ~20 min</span>
-        <span class="px-3 py-1 rounded-full bg-white shadow">Cook: 40 to 60+ min</span>
-        <span class="px-3 py-1 rounded-full bg-white shadow">Serves: 4</span>
-      </div>
+<body class="bg-stone-900 text-stone-100 min-h-screen">
+  <main class="max-w-6xl mx-auto p-4 md:p-8">
+    <header class="mb-6">
+      <h1 class="text-3xl md:text-4xl font-bold">Bolognese Runner</h1>
+      <p class="text-stone-300 mt-1">Jump obstacles. Unlock the recipe as your score climbs.</p>
     </header>
 
-    <section class="grid md:grid-cols-2 gap-6">
-      <article class="bg-white rounded-2xl p-6 shadow">
-        <h2 class="text-2xl font-semibold mb-3">Ingredients</h2>
-        <ul class="list-disc pl-5 space-y-1">
-          <li>Spaghetti (your preferred brand)</li>
-          <li>Olive oil</li>
-          <li>1 small onion (or 1/2 large onion), finely chopped</li>
-          <li>Fresh garlic (about 1/2 bulb, finely chopped)</li>
-          <li>500g room-temp beef mince</li>
-          <li>1 tin whole Italian tomatoes or chopped tomatoes</li>
-          <li>1 sachet tomato paste (roughly 7g)</li>
-          <li>1/2 beef or chicken stock cube</li>
-          <li>A splash of red or white wine (white works great)</li>
-          <li>Optional: grated celery + grated carrot (a handful each)</li>
-          <li>2 tbsp dried oregano</li>
-          <li>1 fistful fresh basil leaves (dried basil also works)</li>
-          <li>Salt (for pasta water and final seasoning)</li>
-        </ul>
-      </article>
-
-      <article class="bg-white rounded-2xl p-6 shadow">
-        <h2 class="text-2xl font-semibold mb-3">Method</h2>
-        <p class="text-sm text-stone-600 mb-3">Herb note: no strict amount. Good range is more than 1 tbsp and less than 1/2 cup total, with a practical guide of 2 tbsp dried oregano and 1 fistful fresh basil leaves.</p>
-
-        <ol class="list-decimal pl-5 space-y-2">
-          <li>First, get your pot of water on to boil.</li>
-          <li>While it heats, chop onion and garlic, and warm up a frying pan.</li>
-          <li>Add onion first and cook in olive oil over medium-high heat, stirring until translucent (not browned).</li>
-          <li>When onion is about halfway cooked, add garlic so it does not burn.</li>
-          <li>Finish cooking onion + garlic, then remove both to a plate.</li>
-          <li>Heat pan well and add room-temp mince. Brown it properly, aiming for about 1/3 browned bits.</li>
-          <li>If very fatty, drain excess fat (not repeatedly into sink drains).</li>
-          <li>Return onion+garlic.</li>
-          <li>Once mince is cooked, add the rest: 1 sachet tomato paste (roughly 7g), 1 tin whole Italian or chopped tomatoes, 2 tbsp dried oregano, 1 fistful fresh basil leaves (or dried basil), and stir.</li>
-          <li>Add 1/2 stock cube and a splash of wine. Add celery/carrot if using.</li>
-          <li>Keep at a gentle bubble (not boiling).</li>
-          <li>Simmer as long as you like, stirring occasionally. If sticking, lower heat. Lid optional for long simmer.</li>
-          <li>Salt pasta water to ~1% (about 15 to 20g for ~1.5 to 2L) and taste the water.</li>
-          <li>Add spaghetti without breaking. Cook until just under al dente, then drain and serve with sauce.</li>
-        </ol>
-      </article>
-    </section>
-
-    <section class="mt-8 bg-white rounded-2xl p-6 shadow">
-      <h2 class="text-2xl font-semibold mb-3">Quick Pasta Salt Calculator</h2>
-      <p class="text-stone-600 mb-3">Rule of thumb: salt is about <strong>1% of water weight/volume</strong>.</p>
-      <div class="grid sm:grid-cols-2 gap-4 items-center">
-        <label class="block">
-          <span class="text-sm text-stone-600">Water in pot (litres)</span>
-          <input id="litres" type="number" min="0.5" step="0.1" value="1.5" class="mt-1 w-full rounded-lg border px-3 py-2" />
-        </label>
-        <div class="rounded-lg bg-orange-100 p-4">
-          <p class="text-sm text-stone-700">Suggested salt</p>
-          <p class="text-2xl font-bold"><span id="saltGrams">15</span> g</p>
+    <section class="grid lg:grid-cols-3 gap-6 items-start">
+      <div class="lg:col-span-2 bg-stone-800 rounded-2xl p-4 shadow-xl">
+        <div class="flex flex-wrap items-center gap-3 mb-3 text-sm">
+          <span class="px-3 py-1 rounded-full bg-stone-700">Score: <strong id="score">0</strong></span>
+          <span class="px-3 py-1 rounded-full bg-stone-700">Best: <strong id="best">0</strong></span>
+          <span class="px-3 py-1 rounded-full bg-emerald-700/80">Unlocks: <strong id="unlockCount">0</strong>/8</span>
+        </div>
+        <canvas id="game" width="900" height="260" class="w-full rounded-xl bg-stone-950 border border-stone-700"></canvas>
+        <div class="mt-3 text-sm text-stone-300">
+          <p><strong>Controls:</strong> Space / ↑ to jump, R to restart.</p>
         </div>
       </div>
-      <p class="mt-3 text-sm text-stone-500">Final check: taste the water. It should taste pleasantly seasoned.</p>
-    </section>
 
-    <footer class="mt-10 text-sm text-stone-500">Tip: Better pasta gives you a wider al dente window before mushiness.</footer>
+      <aside class="bg-stone-800 rounded-2xl p-4 shadow-xl">
+        <h2 class="text-xl font-semibold mb-3">Recipe Unlocks</h2>
+        <ul id="recipeList" class="space-y-2 text-sm"></ul>
+      </aside>
+    </section>
   </main>
 
   <script>
-    const litresInput = document.getElementById('litres');
-    const saltGrams = document.getElementById('saltGrams');
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const scoreEl = document.getElementById('score');
+    const bestEl = document.getElementById('best');
+    const unlockCountEl = document.getElementById('unlockCount');
+    const recipeList = document.getElementById('recipeList');
 
-    function updateSalt() {
-      const litres = Math.max(0, Number(litresInput.value) || 0);
-      const grams = Math.round(litres * 10); // 1% salinity
-      saltGrams.textContent = grams;
+    const unlocks = [
+      { score: 20, text: 'Start first: put pasta water on to boil.' },
+      { score: 45, text: 'Chop onion + garlic, warm pan.' },
+      { score: 70, text: 'Cook onion to translucent, add garlic halfway.' },
+      { score: 95, text: 'Remove onion+garlic, brown mince (~1/3 browned).' },
+      { score: 120, text: 'Add back onion+garlic, tomato paste (7g), tomato tin.' },
+      { score: 150, text: 'Add stock cube, wine, optional celery+carrot.' },
+      { score: 180, text: 'Add 2 tbsp oregano + fistful fresh basil, simmer gently.' },
+      { score: 220, text: 'Salt water (~1%), cook spaghetti just under al dente.' }
+    ];
+
+    let best = Number(localStorage.getItem('bolognese_runner_best') || 0);
+    bestEl.textContent = best;
+
+    const player = { x: 70, y: 0, w: 28, h: 40, vy: 0, gravity: 0.7, jump: -12, grounded: true };
+    const groundY = canvas.height - 48;
+    let obstacles = [];
+    let score = 0;
+    let speed = 6;
+    let frame = 0;
+    let gameOver = false;
+    let unlocked = 0;
+
+    function reset() {
+      obstacles = [];
+      score = 0;
+      speed = 6;
+      frame = 0;
+      gameOver = false;
+      unlocked = 0;
+      player.y = groundY - player.h;
+      player.vy = 0;
+      player.grounded = true;
+      renderUnlocks();
+      updateHud();
     }
 
-    litresInput.addEventListener('input', updateSalt);
-    updateSalt();
+    function renderUnlocks() {
+      recipeList.innerHTML = '';
+      unlocks.forEach((u, i) => {
+        const li = document.createElement('li');
+        const isOpen = i < unlocked;
+        li.className = `p-2 rounded-lg border ${isOpen ? 'border-emerald-500 bg-emerald-900/30 text-emerald-200' : 'border-stone-700 bg-stone-900/40 text-stone-400'}`;
+        li.textContent = isOpen ? `✅ ${u.text}` : `🔒 Unlock at ${u.score}`;
+        recipeList.appendChild(li);
+      });
+      unlockCountEl.textContent = unlocked;
+    }
+
+    function updateHud() {
+      scoreEl.textContent = Math.floor(score);
+      bestEl.textContent = best;
+    }
+
+    function spawnObstacle() {
+      const h = 24 + Math.random() * 28;
+      const w = 16 + Math.random() * 18;
+      obstacles.push({ x: canvas.width + 20, y: groundY - h, w, h });
+    }
+
+    function collide(a, b) {
+      return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // sky gradient
+      const g = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      g.addColorStop(0, '#111827');
+      g.addColorStop(1, '#020617');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // ground
+      ctx.fillStyle = '#374151';
+      ctx.fillRect(0, groundY, canvas.width, 4);
+
+      // player (dino-like block)
+      ctx.fillStyle = '#86efac';
+      ctx.fillRect(player.x, player.y, player.w, player.h);
+      ctx.fillStyle = '#052e16';
+      ctx.fillRect(player.x + 18, player.y + 8, 5, 5);
+
+      // obstacles
+      ctx.fillStyle = '#fca5a5';
+      obstacles.forEach(o => ctx.fillRect(o.x, o.y, o.w, o.h));
+
+      if (gameOver) {
+        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 42px system-ui';
+        ctx.fillText('Game Over', canvas.width / 2 - 120, canvas.height / 2 - 10);
+        ctx.font = '20px system-ui';
+        ctx.fillText('Press R to restart', canvas.width / 2 - 90, canvas.height / 2 + 26);
+      }
+    }
+
+    function tick() {
+      if (!gameOver) {
+        frame++;
+        score += 0.16;
+        speed += 0.0008;
+
+        // unlock progression
+        while (unlocked < unlocks.length && score >= unlocks[unlocked].score) {
+          unlocked++;
+          renderUnlocks();
+        }
+
+        // player physics
+        player.vy += player.gravity;
+        player.y += player.vy;
+        if (player.y >= groundY - player.h) {
+          player.y = groundY - player.h;
+          player.vy = 0;
+          player.grounded = true;
+        } else {
+          player.grounded = false;
+        }
+
+        // spawn obstacles
+        if (frame % Math.floor(90 - Math.min(45, score / 4)) === 0) spawnObstacle();
+
+        // move obstacles
+        obstacles.forEach(o => o.x -= speed);
+        obstacles = obstacles.filter(o => o.x + o.w > -10);
+
+        // collisions
+        for (const o of obstacles) {
+          if (collide(player, o)) {
+            gameOver = true;
+            best = Math.max(best, Math.floor(score));
+            localStorage.setItem('bolognese_runner_best', String(best));
+            break;
+          }
+        }
+
+        if (Math.floor(score) > best) {
+          best = Math.floor(score);
+          localStorage.setItem('bolognese_runner_best', String(best));
+        }
+      }
+
+      updateHud();
+      draw();
+      requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.code === 'Space' || e.code === 'ArrowUp') && !gameOver && player.grounded) {
+        player.vy = player.jump;
+      }
+      if (e.key.toLowerCase() === 'r') reset();
+    });
+
+    reset();
+    tick();
   </script>
 </body>
 </html>
