@@ -378,6 +378,13 @@
             this.distanceMeter = new DistanceMeter(this.canvas,
                 this.spriteDef.TEXT_SPRITE, this.dimensions.WIDTH);
 
+            // Restore persisted high score (stored as pixel distance, same unit as highestScore).
+            var persistedHighScore = Number(window.localStorage.getItem('trex_highestScore') || 0);
+            if (persistedHighScore > 0) {
+                this.highestScore = persistedHighScore;
+                this.distanceMeter.setHighScore(this.highestScore);
+            }
+
             // Draw t-rex
             this.tRex = new Trex(this.canvas, this.spriteDef.TREX);
 
@@ -575,6 +582,10 @@
 
                 var playAchievementSound = this.distanceMeter.update(deltaTime,
                     Math.ceil(this.distanceRan));
+
+                // Expose live score + high score to host page in the same units shown in-game.
+                window.__trexScore = this.distanceMeter.getActualDistance(Math.ceil(this.distanceRan));
+                window.__trexHighScore = this.distanceMeter.getActualDistance(Math.ceil(this.highestScore));
 
                 if (playAchievementSound) {
                     this.playSound(this.soundFx.SCORE);
@@ -800,7 +811,11 @@
             if (this.distanceRan > this.highestScore) {
                 this.highestScore = Math.ceil(this.distanceRan);
                 this.distanceMeter.setHighScore(this.highestScore);
+                window.localStorage.setItem('trex_highestScore', String(this.highestScore));
             }
+
+            window.__trexScore = this.distanceMeter.getActualDistance(Math.ceil(this.distanceRan));
+            window.__trexHighScore = this.distanceMeter.getActualDistance(Math.ceil(this.highestScore));
 
             // Reset the time clock.
             this.time = getTimeStamp();

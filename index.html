@@ -53,7 +53,7 @@
     const progressEl = document.getElementById('progress');
     const blocks = [...document.querySelectorAll('.recipe-block')];
 
-    let best = Number(localStorage.getItem('bolognese_runner_parent_best') || 0);
+    let best = 0;
 
     function percentFromScore(score) {
       let unlocked = 0;
@@ -61,14 +61,10 @@
       return unlocked * 10;
     }
 
-    function render(score) {
-      if (score > best) {
-        best = score;
-        localStorage.setItem('bolognese_runner_parent_best', String(best));
-      }
-
+    function render(score, highScore) {
+      best = Math.max(0, highScore || 0);
       const pct = percentFromScore(best);
-      scoreEl.textContent = String(score);
+      scoreEl.textContent = String(Math.max(0, score || 0));
       bestEl.textContent = String(best);
       progressEl.textContent = `${pct}%`;
 
@@ -78,26 +74,24 @@
       });
     }
 
-    function getRunnerScore() {
+    function getRunnerState() {
       try {
         const win = frame.contentWindow;
-        const runner = win && win.Runner && win.Runner.instance_;
-        if (!runner || !runner.distanceMeter) return null;
-
-        const distance = Math.ceil(runner.distanceRan || 0);
-        const actual = runner.distanceMeter.getActualDistance(distance);
-        return Math.max(0, Math.floor(actual || 0));
+        return {
+          score: Number(win.__trexScore || 0),
+          highScore: Number(win.__trexHighScore || 0)
+        };
       } catch {
-        return null;
+        return { score: 0, highScore: 0 };
       }
     }
 
     setInterval(() => {
-      const s = getRunnerScore();
-      render(s == null ? 0 : s);
+      const state = getRunnerState();
+      render(state.score, state.highScore);
     }, 100);
 
-    render(0);
+    render(0, 0);
   </script>
 </body>
 </html>
