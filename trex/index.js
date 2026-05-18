@@ -1409,13 +1409,17 @@
                             ctx.fill();
                         }
                     } else if (obstacleTheme === 'tomato') {
-                        ctx.fillStyle = '#e9eef3';
-                        ctx.fillRect(x + w * 0.18, y + h * 0.08, w * 0.64, h * 0.9);
-                        ctx.fillStyle = '#c62828';
-                        ctx.fillRect(x + w * 0.22, y + h * 0.33, w * 0.56, h * 0.36);
-                        ctx.fillStyle = '#f8fafc';
-                        ctx.fillRect(x + w * 0.18, y + h * 0.08, w * 0.64, h * 0.08);
-                        ctx.fillRect(x + w * 0.18, y + h * 0.9, w * 0.64, h * 0.08);
+                        if (tomatoCanSprite.complete && tomatoCanSprite.naturalWidth > 0) {
+                            ctx.drawImage(tomatoCanSprite, x + w * 0.14, y, w * 0.72, h);
+                        } else {
+                            ctx.fillStyle = '#e9eef3';
+                            ctx.fillRect(x + w * 0.18, y + h * 0.08, w * 0.64, h * 0.9);
+                            ctx.fillStyle = '#c62828';
+                            ctx.fillRect(x + w * 0.22, y + h * 0.33, w * 0.56, h * 0.36);
+                            ctx.fillStyle = '#f8fafc';
+                            ctx.fillRect(x + w * 0.18, y + h * 0.08, w * 0.64, h * 0.08);
+                            ctx.fillRect(x + w * 0.18, y + h * 0.9, w * 0.64, h * 0.08);
+                        }
                     } else if (obstacleTheme === 'herb') {
                         ctx.fillStyle = '#2e7d32';
                         ctx.beginPath();
@@ -1559,6 +1563,8 @@
     // Obstacle theme controls for custom visuals on cactus slots.
     var OBSTACLE_THEME_KEY = 'trex_obstacle_theme';
     var obstacleTheme = window.localStorage.getItem(OBSTACLE_THEME_KEY) || 'forkknife';
+    var tomatoCanSprite = new Image();
+    tomatoCanSprite.src = 'assets/tomato-can.jpg';
     window.setObstacleTheme = function (theme) {
         obstacleTheme = theme || 'forkknife';
         window.localStorage.setItem(OBSTACLE_THEME_KEY, obstacleTheme);
