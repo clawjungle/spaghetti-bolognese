@@ -28,6 +28,7 @@
         <span class="px-2 py-1 rounded bg-stone-700">Best: <strong id="best">0</strong></span>
         <span class="px-2 py-1 rounded bg-emerald-700/80">Recipe: <strong id="progress">0%</strong></span>
         <span class="px-2 py-1 rounded bg-stone-700">Full unlock at 1000</span>
+        <button id="resetProgressBtn" class="px-2 py-1 rounded bg-red-700 hover:bg-red-600">Reset score + unlocks</button>
       </div>
 
       <div id="recipe" class="space-y-3 text-sm">
@@ -52,6 +53,7 @@
     const bestEl = document.getElementById('best');
     const progressEl = document.getElementById('progress');
     const blocks = [...document.querySelectorAll('.recipe-block')];
+    const resetProgressBtn = document.getElementById('resetProgressBtn');
 
     let best = 0;
 
@@ -90,6 +92,22 @@
       const state = getRunnerState();
       render(state.score, state.highScore);
     }, 100);
+
+    if (resetProgressBtn) {
+      resetProgressBtn.addEventListener('click', () => {
+        localStorage.removeItem('trex_highestScore');
+        best = 0;
+        render(0, 0);
+        try {
+          const win = frame.contentWindow;
+          if (win && win.Runner && win.Runner.instance_) {
+            win.Runner.instance_.highestScore = 0;
+            if (win.Runner.instance_.distanceMeter) win.Runner.instance_.distanceMeter.reset(0);
+            win.__trexHighScore = 0;
+          }
+        } catch {}
+      });
+    }
 
     render(0, 0);
   </script>
