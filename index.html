@@ -28,6 +28,10 @@
         <div class="mt-3 text-sm text-stone-300">
           <p><strong>Controls:</strong> Space / ↑ to jump, R to restart.</p>
         </div>
+        <div class="mt-3 flex gap-3 md:hidden">
+          <button id="jumpBtn" class="flex-1 rounded-xl bg-emerald-600 px-4 py-3 font-semibold active:scale-95">Jump</button>
+          <button id="restartBtn" class="flex-1 rounded-xl bg-stone-600 px-4 py-3 font-semibold active:scale-95">Restart</button>
+        </div>
       </div>
 
       <aside class="bg-stone-800 rounded-2xl p-4 shadow-xl">
@@ -44,6 +48,8 @@
     const bestEl = document.getElementById('best');
     const unlockCountEl = document.getElementById('unlockCount');
     const recipeList = document.getElementById('recipeList');
+    const jumpBtn = document.getElementById('jumpBtn');
+    const restartBtn = document.getElementById('restartBtn');
 
     const unlocks = [
       { score: 20, text: 'Start first: put pasta water on to boil.' },
@@ -195,12 +201,18 @@
       requestAnimationFrame(tick);
     }
 
+    function doJump() {
+      if (!gameOver && player.grounded) player.vy = player.jump;
+    }
+
     window.addEventListener('keydown', (e) => {
-      if ((e.code === 'Space' || e.code === 'ArrowUp') && !gameOver && player.grounded) {
-        player.vy = player.jump;
-      }
+      if (e.code === 'Space' || e.code === 'ArrowUp') doJump();
       if (e.key.toLowerCase() === 'r') reset();
     });
+
+    canvas.addEventListener('pointerdown', doJump);
+    if (jumpBtn) jumpBtn.addEventListener('pointerdown', doJump);
+    if (restartBtn) restartBtn.addEventListener('pointerdown', reset);
 
     reset();
     tick();
