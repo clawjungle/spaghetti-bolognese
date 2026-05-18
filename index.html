@@ -8,23 +8,93 @@
   <style>
     body { overflow-x: hidden; }
     iframe { border: 0; width: 100%; height: 100%; }
+    .locked { filter: blur(5px); opacity: 0.5; user-select: none; }
   </style>
 </head>
 <body class="bg-stone-900 text-stone-100">
-  <main class="min-h-screen w-screen px-4 py-4 md:px-6">
+  <main class="min-h-screen w-screen px-4 py-4 md:px-6 max-w-6xl mx-auto">
     <header class="mb-4">
       <h1 class="text-lg font-semibold">Bolognese Runner, Chromium gameplay build</h1>
-      <p class="text-xs text-stone-300">Using the original Chromium runner code path for movement and spawn behavior.</p>
+      <p class="text-xs text-stone-300">Using the Chromium runner with recipe unlock milestones.</p>
     </header>
 
     <section class="rounded-2xl overflow-hidden border border-stone-700 bg-stone-950 h-[46vh] md:h-[52vh]">
-      <iframe src="./trex/index.html" title="Chromium T-Rex Runner"></iframe>
+      <iframe id="gameFrame" src="./trex/index.html" title="Chromium T-Rex Runner"></iframe>
     </section>
 
     <section class="mt-4 rounded-2xl border border-stone-700 bg-stone-800 p-4 min-h-[28vh]">
-      <h2 class="text-sm font-semibold mb-2">Recipe Unlock Area</h2>
-      <p class="text-xs text-stone-300">Space reserved for recipe unlocks near the bottom of the screen.</p>
+      <div class="flex flex-wrap items-center gap-2 mb-3 text-xs">
+        <span class="px-2 py-1 rounded bg-stone-700">Score: <strong id="score">0</strong></span>
+        <span class="px-2 py-1 rounded bg-stone-700">Best: <strong id="best">0</strong></span>
+        <span class="px-2 py-1 rounded bg-emerald-700/80">Recipe: <strong id="progress">0%</strong></span>
+        <span class="px-2 py-1 rounded bg-stone-700">Full unlock at 700</span>
+      </div>
+
+      <div id="recipe" class="space-y-3 text-sm">
+        <div class="recipe-block" data-unlock="10"><h3 class="font-semibold">Ingredients</h3><p>Spaghetti, olive oil, onion, garlic, mince.</p></div>
+        <div class="recipe-block" data-unlock="20"><p>Tomato paste (1 sachet, ~7g), 1 tin whole Italian or chopped tomatoes.</p></div>
+        <div class="recipe-block" data-unlock="30"><p>1/2 stock cube, splash of red/white wine, optional celery + carrot.</p></div>
+        <div class="recipe-block" data-unlock="40"><p>2 tbsp dried oregano, fistful fresh basil leaves (or dried basil).</p></div>
+        <div class="recipe-block" data-unlock="50"><h3 class="font-semibold">Method</h3><p>Start pasta water first. Chop onion and garlic. Warm pan.</p></div>
+        <div class="recipe-block" data-unlock="60"><p>Cook onion to translucent, add garlic halfway, remove both to a plate.</p></div>
+        <div class="recipe-block" data-unlock="70"><p>Brown mince well (about 1/3 browned), drain excess fat if needed.</p></div>
+        <div class="recipe-block" data-unlock="80"><p>Add everything back in, keep at gentle bubble, stir while simmering.</p></div>
+        <div class="recipe-block" data-unlock="90"><p>Salt pasta water to ~1% (about 15 to 20g for 1.5 to 2L), taste and adjust.</p></div>
+        <div class="recipe-block" data-unlock="100"><p class="text-emerald-300 font-semibold">Fully unlocked ✅ Cook spaghetti just under al dente and serve.</p></div>
+      </div>
     </section>
   </main>
+
+  <script>
+    const milestones = [120, 220, 320, 410, 490, 560, 610, 650, 680, 700];
+    const frame = document.getElementById('gameFrame');
+    const scoreEl = document.getElementById('score');
+    const bestEl = document.getElementById('best');
+    const progressEl = document.getElementById('progress');
+    const blocks = [...document.querySelectorAll('.recipe-block')];
+
+    let best = Number(localStorage.getItem('bolognese_runner_parent_best') || 0);
+
+    function percentFromScore(score) {
+      let unlocked = 0;
+      while (unlocked < milestones.length && score >= milestones[unlocked]) unlocked++;
+      return unlocked * 10;
+    }
+
+    function render(score) {
+      if (score > best) {
+        best = score;
+        localStorage.setItem('bolognese_runner_parent_best', String(best));
+      }
+
+      const pct = percentFromScore(best);
+      scoreEl.textContent = String(score);
+      bestEl.textContent = String(best);
+      progressEl.textContent = `${pct}%`;
+
+      blocks.forEach((b) => {
+        const need = Number(b.dataset.unlock || '100');
+        b.classList.toggle('locked', pct < need);
+      });
+    }
+
+    function getRunnerScore() {
+      try {
+        const win = frame.contentWindow;
+        const runner = win && win.Runner && win.Runner.instance_;
+        if (!runner) return null;
+        return Math.max(0, Math.floor(runner.distanceRan || 0));
+      } catch {
+        return null;
+      }
+    }
+
+    setInterval(() => {
+      const s = getRunnerScore();
+      render(s == null ? 0 : s);
+    }, 100);
+
+    render(0);
+  </script>
 </body>
 </html>
