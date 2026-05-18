@@ -145,7 +145,7 @@
     const groundY = canvas.height - 48;
     let obstacles = [];
     let score = 0;
-    let speed = 6;
+    let speed = 7.5;
     let frame = 0;
     let gameOver = false;
 
@@ -166,7 +166,7 @@
     function reset() {
       obstacles = [];
       score = 0;
-      speed = 6;
+      speed = 7.5;
       frame = 0;
       gameOver = false;
       player.y = groundY - player.h;
@@ -226,8 +226,8 @@
     function tick() {
       if (!gameOver) {
         frame++;
-        score += 0.16;
-        speed += 0.0008;
+        score += 0.19;
+        speed += 0.0012;
 
         player.vy += player.gravity;
         player.y += player.vy;
@@ -239,7 +239,7 @@
           player.grounded = false;
         }
 
-        if (frame % Math.floor(90 - Math.min(45, score / 4)) === 0) spawnObstacle();
+        if (frame % Math.floor(76 - Math.min(42, score / 3.2)) === 0) spawnObstacle();
 
         obstacles.forEach(o => o.x -= speed);
         obstacles = obstacles.filter(o => o.x + o.w > -10);
