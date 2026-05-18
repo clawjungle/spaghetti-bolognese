@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
   <title>Bolognese Runner</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { overflow-x: hidden; }
-    canvas { image-rendering: pixelated; }
+    body { overflow-x: hidden; touch-action: manipulation; }
+    canvas { image-rendering: pixelated; touch-action: manipulation; }
+    button { touch-action: manipulation; }
   </style>
 </head>
 <body class="bg-stone-900 text-stone-100 min-h-screen">
