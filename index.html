@@ -28,6 +28,7 @@
         <span class="px-3 py-1 rounded-full bg-stone-100">Best: <strong id="best">0</strong></span>
         <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">Recipe: <strong id="progress">0%</strong></span>
         <span class="px-3 py-1 rounded-full bg-stone-100">Full unlock at 1000</span>
+        <button id="cheatBtn" class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 hover:bg-amber-200">Cheat</button>
         <button id="resetProgressBtn" class="px-3 py-1 rounded-full bg-red-100 text-red-700 hover:bg-red-200">Reset score + unlocks</button>
       </div>
 
@@ -121,6 +122,7 @@
     const progressEl = document.getElementById('progress');
     const blocks = [...document.querySelectorAll('.recipe-block')];
     const resetProgressBtn = document.getElementById('resetProgressBtn');
+    const cheatBtn = document.getElementById('cheatBtn');
 
     let best = 0;
 
@@ -159,6 +161,27 @@
       const state = getRunnerState();
       render(state.score, state.highScore);
     }, 100);
+
+    if (cheatBtn) {
+      cheatBtn.addEventListener('click', () => {
+        const answer = (prompt('Enter the secret things') || '').trim().toLowerCase();
+        if (answer === 'wine gums') {
+          const win = frame.contentWindow;
+          const maxScore = milestones[milestones.length - 1];
+          localStorage.setItem('trex_highestScore', String(maxScore / 0.025));
+          best = maxScore;
+          render(best, best);
+          try {
+            if (win && win.Runner && win.Runner.instance_) {
+              win.Runner.instance_.highestScore = Math.ceil(maxScore / 0.025);
+              if (win.Runner.instance_.distanceMeter) win.Runner.instance_.distanceMeter.setHighScore(win.Runner.instance_.highestScore);
+              win.__trexHighScore = maxScore;
+            }
+          } catch {}
+          alert('Fully unlocked ✅');
+        }
+      });
+    }
 
     if (resetProgressBtn) {
       resetProgressBtn.addEventListener('click', () => {
