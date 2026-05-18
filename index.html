@@ -136,17 +136,26 @@
     const cheatBtn = document.getElementById('cheatBtn');
     const recipeBlocks = [...document.querySelectorAll('.recipe-block')];
 
+    const FPS = 60;
+    const MS_PER_FRAME = 1000 / FPS;
+    const ACCELERATION = 0.001;
+    const SPEED = 6;
+    const MAX_SPEED = 13;
+    const CLEAR_TIME = 3000;
+    const GAP_COEFFICIENT = 0.6;
+
     const scoreMilestones = [35, 75, 120, 170, 225, 285, 350, 420, 500, 600];
 
     let best = Number(localStorage.getItem('bolognese_runner_best') || 0);
     bestEl.textContent = best;
 
-    const player = { x: 70, y: 0, w: 28, h: 40, vy: 0, gravity: 0.7, jump: -12, grounded: true };
+    const player = { x: 70, y: 0, w: 28, h: 40, vy: 0, gravity: 0.6, jump: -12, grounded: true };
     const groundY = canvas.height - 48;
     let obstacles = [];
     let score = 0;
-    let speed = 7.5;
-    let frame = 0;
+    let currentSpeed = SPEED;
+    let runningTime = 0;
+    let lastTime = 0;
     let gameOver = false;
 
     function getUnlockPercentFromScore(s) {
@@ -166,8 +175,9 @@
     function reset() {
       obstacles = [];
       score = 0;
-      speed = 7.5;
-      frame = 0;
+      currentSpeed = SPEED;
+      runningTime = 0;
+      lastTime = 0;
       gameOver = false;
       player.y = groundY - player.h;
       player.vy = 0;
@@ -183,10 +193,27 @@
       applyRecipeUnlock(liveUnlock);
     }
 
-    function spawnObstacle() {
+    function createObstacle() {
       const h = 24 + Math.random() * 28;
       const w = 16 + Math.random() * 18;
-      obstacles.push({ x: canvas.width + 20, y: groundY - h, w, h });
+      return { x: canvas.width + 20, y: groundY - h, w, h, speedOffset: Math.random() * 0.8 };
+    }
+
+    function getRandomNum(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function maybeSpawnObstacle() {
+      if (!obstacles.length) {
+        obstacles.push(createObstacle());
+        return;
+      }
+      const last = obstacles[obstacles.length - 1];
+      const minGap = Math.round((last.w * currentSpeed) + 120);
+      const maxGap = Math.round(minGap * GAP_COEFFICIENT * 4);
+      const gap = getRandomNum(minGap, maxGap);
+
+      if (canvas.width - (last.x + last.w) > gap) obstacles.push(createObstacle());
     }
 
     function collide(a, b) {
@@ -223,11 +250,14 @@
       }
     }
 
-    function tick() {
+    function tick(ts) {
+      if (!lastTime) lastTime = ts;
+      let deltaTime = ts - lastTime;
+      lastTime = ts;
+      if (deltaTime > 120) deltaTime = 120;
+
       if (!gameOver) {
-        frame++;
-        score += 0.19;
-        speed += 0.0012;
+        runningTime += deltaTime;
 
         player.vy += player.gravity;
         player.y += player.vy;
@@ -239,9 +269,9 @@
           player.grounded = false;
         }
 
-        if (frame % Math.floor(76 - Math.min(42, score / 3.2)) === 0) spawnObstacle();
+        if (runningTime > CLEAR_TIME) maybeSpawnObstacle();
 
-        obstacles.forEach(o => o.x -= speed);
+        obstacles.forEach(o => o.x -= (currentSpeed + o.speedOffset));
         obstacles = obstacles.filter(o => o.x + o.w > -10);
 
         for (const o of obstacles) {
@@ -253,9 +283,14 @@
           }
         }
 
-        if (Math.floor(score) > best) {
-          best = Math.floor(score);
-          localStorage.setItem('bolognese_runner_best', String(best));
+        if (!gameOver) {
+          score += currentSpeed * deltaTime / MS_PER_FRAME;
+          if (currentSpeed < MAX_SPEED) currentSpeed += ACCELERATION;
+
+          if (Math.floor(score) > best) {
+            best = Math.floor(score);
+            localStorage.setItem('bolognese_runner_best', String(best));
+          }
         }
       }
 
@@ -302,7 +337,7 @@
     if (cheatBtn) cheatBtn.addEventListener('click', openCheatPrompt);
 
     reset();
-    tick();
+    requestAnimationFrame(tick);
   </script>
 </body>
 </html>
