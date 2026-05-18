@@ -82,8 +82,11 @@
       try {
         const win = frame.contentWindow;
         const runner = win && win.Runner && win.Runner.instance_;
-        if (!runner) return null;
-        return Math.max(0, Math.floor(runner.distanceRan || 0));
+        if (!runner || !runner.distanceMeter) return null;
+
+        const distance = Math.ceil(runner.distanceRan || 0);
+        const actual = runner.distanceMeter.getActualDistance(distance);
+        return Math.max(0, Math.floor(actual || 0));
       } catch {
         return null;
       }
