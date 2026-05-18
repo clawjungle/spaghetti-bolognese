@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Josh's Spaghetti Bolognese</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-orange-50 text-stone-800 min-h-screen">
+  <main class="max-w-4xl mx-auto px-4 py-10">
+    <header class="mb-8">
+      <h1 class="text-4xl font-bold tracking-tight">Josh's Spaghetti Bolognese</h1>
+      <p class="mt-2 text-stone-600">A rich, comforting bolognese with practical home-cook timing and seasoning tips.</p>
+      <div class="mt-4 flex flex-wrap gap-2 text-sm">
+        <span class="px-3 py-1 rounded-full bg-white shadow">Prep: ~20 min</span>
+        <span class="px-3 py-1 rounded-full bg-white shadow">Cook: 40 to 60+ min</span>
+        <span class="px-3 py-1 rounded-full bg-white shadow">Serves: 4</span>
+      </div>
+    </header>
+
+    <section class="grid md:grid-cols-2 gap-6">
+      <article class="bg-white rounded-2xl p-6 shadow">
+        <h2 class="text-2xl font-semibold mb-3">Ingredients</h2>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Spaghetti (your preferred brand)</li>
+          <li>Olive oil</li>
+          <li>1 small onion (or 1/2 large onion), finely chopped</li>
+          <li>Fresh garlic (about 1/2 bulb, finely chopped)</li>
+          <li>500g room-temp beef mince</li>
+          <li>1 tin whole Italian tomatoes or chopped tomatoes</li>
+          <li>1 sachet tomato paste (roughly 7g)</li>
+          <li>1/2 beef or chicken stock cube</li>
+          <li>A splash of red or white wine (white works great)</li>
+          <li>Optional: grated celery + grated carrot (a handful each)</li>
+          <li>2 tbsp dried oregano</li>
+          <li>1 fistful fresh basil leaves (dried basil also works)</li>
+          <li>Salt (for pasta water and final seasoning)</li>
+        </ul>
+      </article>
+
+      <article class="bg-white rounded-2xl p-6 shadow">
+        <h2 class="text-2xl font-semibold mb-3">Method</h2>
+        <p class="text-sm text-stone-600 mb-3">Herb note: no strict amount. Good range is more than 1 tbsp and less than 1/2 cup total, with a practical guide of 2 tbsp dried oregano and 1 fistful fresh basil leaves.</p>
+
+        <ol class="list-decimal pl-5 space-y-2">
+          <li>First, get your pot of water on to boil.</li>
+          <li>While it heats, chop onion and garlic, and warm up a frying pan.</li>
+          <li>Add onion first and cook in olive oil over medium-high heat, stirring until translucent (not browned).</li>
+          <li>When onion is about halfway cooked, add garlic so it does not burn.</li>
+          <li>Finish cooking onion + garlic, then remove both to a plate.</li>
+          <li>Heat pan well and add room-temp mince. Brown it properly, aiming for about 1/3 browned bits.</li>
+          <li>If very fatty, drain excess fat (not repeatedly into sink drains).</li>
+          <li>Return onion+garlic.</li>
+          <li>Once mince is cooked, add the rest: 1 sachet tomato paste (roughly 7g), 1 tin whole Italian or chopped tomatoes, 2 tbsp dried oregano, 1 fistful fresh basil leaves (or dried basil), and stir.</li>
+          <li>Add 1/2 stock cube and a splash of wine. Add celery/carrot if using.</li>
+          <li>Keep at a gentle bubble (not boiling).</li>
+          <li>Simmer as long as you like, stirring occasionally. If sticking, lower heat. Lid optional for long simmer.</li>
+          <li>Salt pasta water to ~1% (about 15 to 20g for ~1.5 to 2L) and taste the water.</li>
+          <li>Add spaghetti without breaking. Cook until just under al dente, then drain and serve with sauce.</li>
+        </ol>
+      </article>
+    </section>
+
+    <section class="mt-8 bg-white rounded-2xl p-6 shadow">
+      <h2 class="text-2xl font-semibold mb-3">Quick Pasta Salt Calculator</h2>
+      <p class="text-stone-600 mb-3">Rule of thumb: salt is about <strong>1% of water weight/volume</strong>.</p>
+      <div class="grid sm:grid-cols-2 gap-4 items-center">
+        <label class="block">
+          <span class="text-sm text-stone-600">Water in pot (litres)</span>
+          <input id="litres" type="number" min="0.5" step="0.1" value="1.5" class="mt-1 w-full rounded-lg border px-3 py-2" />
+        </label>
+        <div class="rounded-lg bg-orange-100 p-4">
+          <p class="text-sm text-stone-700">Suggested salt</p>
+          <p class="text-2xl font-bold"><span id="saltGrams">15</span> g</p>
+        </div>
+      </div>
+      <p class="mt-3 text-sm text-stone-500">Final check: taste the water. It should taste pleasantly seasoned.</p>
+    </section>
+
+    <footer class="mt-10 text-sm text-stone-500">Tip: Better pasta gives you a wider al dente window before mushiness.</footer>
+  </main>
+
+  <script>
+    const litresInput = document.getElementById('litres');
+    const saltGrams = document.getElementById('saltGrams');
+
+    function updateSalt() {
+      const litres = Math.max(0, Number(litresInput.value) || 0);
+      const grams = Math.round(litres * 10); // 1% salinity
+      saltGrams.textContent = grams;
+    }
+
+    litresInput.addEventListener('input', updateSalt);
+    updateSalt();
+  </script>
+</body>
+</html>
