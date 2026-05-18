@@ -182,21 +182,23 @@
       player.y = groundY - player.h;
       player.vy = 0;
       player.grounded = true;
-      applyRecipeUnlock(getUnlockPercentFromScore(best));
+      applyRecipeUnlock(getUnlockPercentFromScore(Math.floor(best / 10)));
       updateHud();
     }
 
     function updateHud() {
-      scoreEl.textContent = Math.floor(score);
-      bestEl.textContent = best;
-      const liveUnlock = Math.max(getUnlockPercentFromScore(score), getUnlockPercentFromScore(best));
+      const shownScore = Math.floor(score / 10);
+      const shownBest = Math.floor(best / 10);
+      scoreEl.textContent = shownScore;
+      bestEl.textContent = shownBest;
+      const liveUnlock = Math.max(getUnlockPercentFromScore(shownScore), getUnlockPercentFromScore(shownBest));
       applyRecipeUnlock(liveUnlock);
     }
 
     function createObstacle() {
       const h = 24 + Math.random() * 28;
       const w = 16 + Math.random() * 18;
-      return { x: canvas.width + 20, y: groundY - h, w, h, speedOffset: Math.random() * 0.8 };
+      return { x: canvas.width + 20, y: groundY - h, w, h };
     }
 
     function getRandomNum(min, max) {
@@ -259,8 +261,9 @@
       if (!gameOver) {
         runningTime += deltaTime;
 
-        player.vy += player.gravity;
-        player.y += player.vy;
+        const step = deltaTime / MS_PER_FRAME;
+        player.vy += player.gravity * step;
+        player.y += player.vy * step;
         if (player.y >= groundY - player.h) {
           player.y = groundY - player.h;
           player.vy = 0;
@@ -271,7 +274,7 @@
 
         if (runningTime > CLEAR_TIME) maybeSpawnObstacle();
 
-        obstacles.forEach(o => o.x -= (currentSpeed + o.speedOffset));
+        obstacles.forEach(o => o.x -= currentSpeed * step);
         obstacles = obstacles.filter(o => o.x + o.w > -10);
 
         for (const o of obstacles) {
@@ -308,7 +311,7 @@
       if (!code) return;
 
       if (code === 'wine gums') {
-        best = Math.max(best, scoreMilestones[scoreMilestones.length - 1]);
+        best = Math.max(best, scoreMilestones[scoreMilestones.length - 1] * 10);
         localStorage.setItem('bolognese_runner_best', String(best));
         updateHud();
         alert('Unlocked everything ✅');
