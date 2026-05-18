@@ -1389,38 +1389,77 @@
                     var x = this.xPos;
                     var y = this.yPos;
 
-                    // Alternate fork and knife styles for variety.
-                    var drawFork = Math.floor((x / 32)) % 2 === 0;
-
                     ctx.save();
-                    if (drawFork) {
-                        // Fork handle
-                        ctx.fillStyle = '#8b5e3c';
-                        ctx.fillRect(x + w * 0.38, y + h * 0.25, w * 0.24, h * 0.75);
-                        // Fork head
-                        ctx.fillStyle = '#b8c2cc';
-                        ctx.fillRect(x + w * 0.28, y + h * 0.1, w * 0.44, h * 0.18);
-                        // Tines
-                        ctx.fillStyle = '#d6dde3';
-                        var tineW = Math.max(2, w * 0.07);
-                        ctx.fillRect(x + w * 0.30, y, tineW, h * 0.14);
-                        ctx.fillRect(x + w * 0.42, y, tineW, h * 0.14);
-                        ctx.fillRect(x + w * 0.54, y, tineW, h * 0.14);
-                        ctx.fillRect(x + w * 0.66, y, tineW, h * 0.14);
-                    } else {
-                        // Knife handle
-                        ctx.fillStyle = '#6f4a2f';
-                        ctx.fillRect(x + w * 0.36, y + h * 0.38, w * 0.28, h * 0.62);
-                        // Knife blade
-                        ctx.fillStyle = '#c9d2db';
+
+                    if (obstacleTheme === 'meatball') {
+                        ctx.fillStyle = '#7a3d1f';
+                        ctx.fillRect(x + w * 0.46, y + h * 0.05, w * 0.08, h * 0.95);
+                        var r = Math.max(5, Math.min(w, h) * 0.22);
+                        var centers = [0.25, 0.52, 0.78];
+                        for (var i = 0; i < centers.length; i++) {
+                            var cy = y + h * centers[i];
+                            var cx = x + w * 0.5;
+                            ctx.fillStyle = '#9f4a22';
+                            ctx.beginPath();
+                            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.fillStyle = '#b55a2e';
+                            ctx.beginPath();
+                            ctx.arc(cx - r * 0.3, cy - r * 0.25, r * 0.35, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    } else if (obstacleTheme === 'tomato') {
+                        ctx.fillStyle = '#e9eef3';
+                        ctx.fillRect(x + w * 0.18, y + h * 0.08, w * 0.64, h * 0.9);
+                        ctx.fillStyle = '#c62828';
+                        ctx.fillRect(x + w * 0.22, y + h * 0.33, w * 0.56, h * 0.36);
+                        ctx.fillStyle = '#f8fafc';
+                        ctx.fillRect(x + w * 0.18, y + h * 0.08, w * 0.64, h * 0.08);
+                        ctx.fillRect(x + w * 0.18, y + h * 0.9, w * 0.64, h * 0.08);
+                    } else if (obstacleTheme === 'herb') {
+                        ctx.fillStyle = '#2e7d32';
                         ctx.beginPath();
-                        ctx.moveTo(x + w * 0.28, y + h * 0.42);
-                        ctx.lineTo(x + w * 0.72, y + h * 0.42);
-                        ctx.lineTo(x + w * 0.62, y);
-                        ctx.lineTo(x + w * 0.38, y);
-                        ctx.closePath();
+                        ctx.ellipse(x + w * 0.38, y + h * 0.45, w * 0.22, h * 0.28, -0.5, 0, Math.PI * 2);
                         ctx.fill();
+                        ctx.beginPath();
+                        ctx.ellipse(x + w * 0.58, y + h * 0.4, w * 0.2, h * 0.25, 0.35, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.ellipse(x + w * 0.5, y + h * 0.65, w * 0.24, h * 0.3, 0.15, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.strokeStyle = '#1b5e20';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(x + w * 0.5, y + h * 0.95);
+                        ctx.lineTo(x + w * 0.5, y + h * 0.25);
+                        ctx.stroke();
+                    } else {
+                        var drawFork = Math.floor((x / 32)) % 2 === 0;
+                        if (drawFork) {
+                            ctx.fillStyle = '#8b5e3c';
+                            ctx.fillRect(x + w * 0.38, y + h * 0.25, w * 0.24, h * 0.75);
+                            ctx.fillStyle = '#b8c2cc';
+                            ctx.fillRect(x + w * 0.28, y + h * 0.1, w * 0.44, h * 0.18);
+                            ctx.fillStyle = '#d6dde3';
+                            var tineW = Math.max(2, w * 0.07);
+                            ctx.fillRect(x + w * 0.30, y, tineW, h * 0.14);
+                            ctx.fillRect(x + w * 0.42, y, tineW, h * 0.14);
+                            ctx.fillRect(x + w * 0.54, y, tineW, h * 0.14);
+                            ctx.fillRect(x + w * 0.66, y, tineW, h * 0.14);
+                        } else {
+                            ctx.fillStyle = '#6f4a2f';
+                            ctx.fillRect(x + w * 0.36, y + h * 0.38, w * 0.28, h * 0.62);
+                            ctx.fillStyle = '#c9d2db';
+                            ctx.beginPath();
+                            ctx.moveTo(x + w * 0.28, y + h * 0.42);
+                            ctx.lineTo(x + w * 0.72, y + h * 0.42);
+                            ctx.lineTo(x + w * 0.62, y);
+                            ctx.lineTo(x + w * 0.38, y);
+                            ctx.closePath();
+                            ctx.fill();
+                        }
                     }
+
                     ctx.restore();
                     return;
                 }
@@ -1516,6 +1555,14 @@
             }
         };
 
+
+    // Obstacle theme controls for custom visuals on cactus slots.
+    var OBSTACLE_THEME_KEY = 'trex_obstacle_theme';
+    var obstacleTheme = window.localStorage.getItem(OBSTACLE_THEME_KEY) || 'forkknife';
+    window.setObstacleTheme = function (theme) {
+        obstacleTheme = theme || 'forkknife';
+        window.localStorage.setItem(OBSTACLE_THEME_KEY, obstacleTheme);
+    };
 
     /**
      * Obstacle definitions.
