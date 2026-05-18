@@ -30,6 +30,9 @@
         <div class="mt-3 text-sm text-stone-300">
           <p><strong>Controls:</strong> Space / ↑ to jump, R to restart.</p>
         </div>
+        <div class="mt-3">
+          <button id="cheatBtn" class="rounded-xl bg-amber-600 px-4 py-2 text-sm font-semibold active:scale-95">Cheat Codes</button>
+        </div>
         <div class="mt-3 flex gap-3 md:hidden">
           <button id="jumpBtn" class="flex-1 rounded-xl bg-emerald-600 px-4 py-3 font-semibold active:scale-95">Jump</button>
           <button id="restartBtn" class="flex-1 rounded-xl bg-stone-600 px-4 py-3 font-semibold active:scale-95">Restart</button>
@@ -130,6 +133,7 @@
     const unlockPercentEl = document.getElementById('unlockPercent');
     const jumpBtn = document.getElementById('jumpBtn');
     const restartBtn = document.getElementById('restartBtn');
+    const cheatBtn = document.getElementById('cheatBtn');
     const recipeBlocks = [...document.querySelectorAll('.recipe-block')];
 
     const scoreMilestones = [20, 45, 70, 95, 120, 150, 180, 220, 260, 300];
@@ -264,6 +268,29 @@
       if (!gameOver && player.grounded) player.vy = player.jump;
     }
 
+    function openCheatPrompt() {
+      const code = (prompt('Enter cheat code') || '').trim().toLowerCase();
+      if (!code) return;
+
+      if (code === 'wine gums') {
+        best = Math.max(best, scoreMilestones[scoreMilestones.length - 1]);
+        localStorage.setItem('bolognese_runner_best', String(best));
+        updateHud();
+        alert('Unlocked everything ✅');
+        return;
+      }
+
+      if (code === 'reset') {
+        best = 0;
+        localStorage.removeItem('bolognese_runner_best');
+        reset();
+        alert('High score and unlock cache reset.');
+        return;
+      }
+
+      alert('Unknown cheat code.');
+    }
+
     window.addEventListener('keydown', (e) => {
       if (e.code === 'Space' || e.code === 'ArrowUp') doJump();
       if (e.key.toLowerCase() === 'r') reset();
@@ -272,6 +299,7 @@
     canvas.addEventListener('pointerdown', doJump);
     if (jumpBtn) jumpBtn.addEventListener('pointerdown', doJump);
     if (restartBtn) restartBtn.addEventListener('pointerdown', reset);
+    if (cheatBtn) cheatBtn.addEventListener('click', openCheatPrompt);
 
     reset();
     tick();
