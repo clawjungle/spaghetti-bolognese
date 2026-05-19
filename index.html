@@ -41,6 +41,11 @@
       transform: translate(1px, 1px);
       box-shadow: 2px 2px 0 #1f2937;
     }
+    @media (orientation: landscape) and (max-width: 1024px) {
+      .game-shell {
+        height: 72vh;
+      }
+    }
   </style>
 </head>
 <body class="bg-amber-50 text-stone-800">
@@ -51,13 +56,14 @@
 
     </header>
 
-    <section class="rounded-2xl overflow-hidden border border-amber-200 bg-white h-[46vh] md:h-[52vh] shadow">
+    <section id="gameShell" class="game-shell rounded-2xl overflow-hidden border border-amber-200 bg-white h-[46vh] md:h-[52vh] shadow">
       <iframe id="gameFrame" src="./trex/index.html" title="Chromium T-Rex Runner"></iframe>
     </section>
 
     <section class="mt-4 rounded-2xl border border-amber-200 bg-white p-6 min-h-[28vh] shadow">
       <div class="flex flex-wrap items-center gap-2 mb-4 text-sm">
         <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">Recipe: <strong id="progress">0%</strong></span>
+        <button id="landscapeBtn" class="pixel-btn px-3 py-1 bg-sky-100 text-sky-800 hover:bg-sky-200">Landscape</button>
         <button id="cheatBtn" class="pixel-btn px-3 py-1 bg-amber-100 text-amber-800 hover:bg-amber-200">Cheat</button>
         <button id="resetProgressBtn" class="pixel-btn px-3 py-1 bg-red-100 text-red-700 hover:bg-red-200">Reset</button>
       </div>
@@ -163,6 +169,8 @@
     const frame = document.getElementById('gameFrame');
     const progressEl = document.getElementById('progress');
     const blocks = [...document.querySelectorAll('.recipe-block')];
+    const gameShell = document.getElementById('gameShell');
+    const landscapeBtn = document.getElementById('landscapeBtn');
     const cheatBtn = document.getElementById('cheatBtn');
     const resetProgressBtn = document.getElementById('resetProgressBtn');
 
@@ -201,6 +209,37 @@
       const state = getRunnerState();
       render(state.score, state.highScore);
     }, 100);
+
+    if (landscapeBtn) {
+      const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+      if (!isTouch) landscapeBtn.style.display = 'none';
+
+      landscapeBtn.addEventListener('click', async () => {
+        if (!gameShell) return;
+
+        try {
+          if (!document.fullscreenElement) {
+            await gameShell.requestFullscreen();
+            if (screen.orientation && screen.orientation.lock) {
+              try { await screen.orientation.lock('landscape'); } catch {}
+            }
+            landscapeBtn.textContent = 'Exit landscape';
+          } else {
+            if (document.exitFullscreen) await document.exitFullscreen();
+            if (screen.orientation && screen.orientation.unlock) {
+              try { screen.orientation.unlock(); } catch {}
+            }
+            landscapeBtn.textContent = 'Landscape';
+          }
+        } catch {
+          alert('Landscape mode is not supported on this browser.');
+        }
+      });
+
+      document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) landscapeBtn.textContent = 'Landscape';
+      });
+    }
 
     if (cheatBtn) {
       cheatBtn.addEventListener('click', () => {
