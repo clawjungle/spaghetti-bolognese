@@ -84,12 +84,16 @@
     </section>
 
     <section class="mt-4 rounded-2xl border border-amber-200 bg-white p-6 min-h-[28vh] shadow">
-      <div class="flex flex-wrap items-center gap-2 mb-4 text-sm">
-        <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">Recipe: <strong id="progress">0%</strong></span>
-        <button id="installBtn" class="pixel-btn px-3 py-1 bg-emerald-100 text-emerald-800 hover:bg-emerald-200 hidden">Install</button>
-        <button id="landscapeBtn" class="pixel-btn px-3 py-1 bg-sky-100 text-sky-800 hover:bg-sky-200">Fullscreen</button>
-        <button id="cheatBtn" class="pixel-btn px-3 py-1 bg-amber-100 text-amber-800 hover:bg-amber-200">Cheat</button>
-        <button id="resetProgressBtn" class="pixel-btn px-3 py-1 bg-red-100 text-red-700 hover:bg-red-200">Reset</button>
+      <div class="mb-4 text-sm">
+        <div class="mb-2">
+          <span class="pixel-btn inline-block px-3 py-1 bg-emerald-100 text-emerald-800">Recipe: <strong id="progress">0%</strong></span>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="installBtn" class="pixel-btn px-3 py-1 bg-emerald-100 text-emerald-800 hover:bg-emerald-200 hidden">Install</button>
+          <button id="landscapeBtn" class="pixel-btn px-3 py-1 bg-sky-100 text-sky-800 hover:bg-sky-200">Fullscreen</button>
+          <button id="cheatBtn" class="pixel-btn px-3 py-1 bg-amber-100 text-amber-800 hover:bg-amber-200">Cheat</button>
+          <button id="resetProgressBtn" class="pixel-btn px-3 py-1 bg-red-100 text-red-700 hover:bg-red-200">Reset</button>
+        </div>
       </div>
 
       <div id="recipe" class="space-y-3 text-sm">
