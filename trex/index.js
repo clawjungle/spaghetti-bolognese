@@ -1391,10 +1391,24 @@
 
                     ctx.save();
 
+                    var drawContain = function (img, dx, dy, dw, dh, padRatio) {
+                        var pad = (padRatio || 0) * Math.min(dw, dh);
+                        var bw = Math.max(1, dw - pad * 2);
+                        var bh = Math.max(1, dh - pad * 2);
+                        var scale = Math.min(bw / img.naturalWidth, bh / img.naturalHeight);
+                        var rw = Math.max(1, img.naturalWidth * scale);
+                        var rh = Math.max(1, img.naturalHeight * scale);
+                        var rx = dx + (dw - rw) / 2;
+                        var ry = dy + (dh - rh) / 2;
+                        ctx.drawImage(img, rx, ry, rw, rh);
+                    };
+
                     if (obstacleTheme === 'packet') {
-                        var packetSprite = this.typeConfig.type === 'CACTUS_LARGE' ? packetTallSprite : packetSmallSprite;
+                        var packetSprite = packetSourceSprite.complete && packetSourceSprite.naturalWidth > 0
+                            ? packetSourceSprite
+                            : (this.typeConfig.type === 'CACTUS_LARGE' ? packetTallSprite : packetSmallSprite);
                         if (packetSprite.complete && packetSprite.naturalWidth > 0) {
-                            ctx.drawImage(packetSprite, x, y, w, h);
+                            drawContain(packetSprite, x, y, w, h, 0.02);
                         } else {
                             ctx.fillStyle = '#f6d365';
                             ctx.fillRect(x + w * 0.18, y + h * 0.08, w * 0.64, h * 0.9);
@@ -1434,7 +1448,7 @@
                         }
                     } else if (obstacleTheme === 'tomato') {
                         if (tomatoCanSprite.complete && tomatoCanSprite.naturalWidth > 0) {
-                            ctx.drawImage(tomatoCanSprite, x + w * 0.14, y, w * 0.72, h);
+                            drawContain(tomatoCanSprite, x, y, w, h, 0.03);
                         } else {
                             ctx.fillStyle = '#e9eef3';
                             ctx.fillRect(x + w * 0.18, y + h * 0.08, w * 0.64, h * 0.9);
@@ -1599,6 +1613,8 @@
     var obstacleTheme = window.localStorage.getItem(OBSTACLE_THEME_KEY) || 'packet';
     var tomatoCanSprite = new Image();
     tomatoCanSprite.src = 'assets/tomato-can.jpg';
+    var packetSourceSprite = new Image();
+    packetSourceSprite.src = 'assets/packet-source.png';
     var packetSmallSprite = new Image();
     packetSmallSprite.src = 'assets/packet-small.png';
     var packetTallSprite = new Image();
