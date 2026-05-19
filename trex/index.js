@@ -310,8 +310,11 @@
          * Load and decode base 64 encoded sounds.
          */
         loadSounds: function () {
-            if (!IS_IOS) {
-                this.audioContext = new AudioContext();
+            var AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+
+            if (!this.audioContext) {
+                this.audioContext = new AudioCtx();
 
                 var resourceTemplate =
                     document.getElementById(this.config.RESOURCE_TEMPLATE_ID).content;
@@ -327,6 +330,10 @@
                         this.soundFx[index] = audioData;
                     }.bind(this, sound));
                 }
+            }
+
+            if (this.audioContext.state === 'suspended') {
+                this.audioContext.resume();
             }
         },
 
@@ -894,7 +901,10 @@
          * @param {SoundBuffer} soundBuffer
          */
         playSound: function (soundBuffer) {
-            if (soundBuffer) {
+            if (soundBuffer && this.audioContext) {
+                if (this.audioContext.state === 'suspended') {
+                    this.audioContext.resume();
+                }
                 var sourceNode = this.audioContext.createBufferSource();
                 sourceNode.buffer = soundBuffer;
                 sourceNode.connect(this.audioContext.destination);
