@@ -628,10 +628,12 @@
                 // Night from 1200-1999, day again from 2000+.
                 var actualDistance =
                     this.distanceMeter.getActualDistance(Math.ceil(this.distanceRan));
-                var shouldBeNight = actualDistance > 1200 && actualDistance < 2000;
+                var shouldBeNight =
+                    (actualDistance > 1200 && actualDistance < 2000) ||
+                    window.__forceNightMode === true;
 
-                if (window.__forceNightMode !== null) {
-                    shouldBeNight = !!window.__forceNightMode;
+                if (window.__forceNightMode === false) {
+                    shouldBeNight = false;
                 }
 
                 if (shouldBeNight !== this.inverted) {
