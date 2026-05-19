@@ -72,6 +72,24 @@ html, body {
   display: none;
 }
 
+.sound-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  z-index: 20;
+  background: rgba(255, 247, 237, 0.95);
+  color: rgba(120, 53, 15, 0.9);
+  border: 2px solid rgba(120, 53, 15, 0.55);
+  padding: 6px 10px;
+  border-radius: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-weight: 800;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 @media (max-width: 420px) {
   .suggested-left > #control-buttons, .suggested-right > #control-buttons {
     float: none;

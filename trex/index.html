@@ -15,6 +15,7 @@
          <h1 style="text-align: center;color: rgba(120,53,15,0.8);font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;font-weight: 800;">Space to start</h1>
          <div class="niokbutton" onclick="okbuttonsend()"></div>
     </div>
+    <div id="soundHint" class="sound-hint">Tap to enable sound</div>
     <div id="main-frame-error" class="interstitial-wrapper">
         <div id="main-content">
             <div class="icon icon-offline" alt=""></div>
@@ -37,17 +38,42 @@
         if (box) box.style.visibility = "hidden";
     }
 
+    function hideSoundHint() {
+        var hint = document.getElementById('soundHint');
+        if (hint) hint.style.display = 'none';
+    }
+
     function okbuttonsend() {
         hideStartMessage();
+        hideSoundHint();
     }
 
     document.addEventListener('keydown', function(evt) {
         evt = evt || window.event;
-        if (evt.keyCode === 32) hideStartMessage();
+        if (evt.keyCode === 32) {
+            hideStartMessage();
+            hideSoundHint();
+        }
     }, { passive: true });
 
-    document.addEventListener('touchstart', hideStartMessage, { passive: true });
-    document.addEventListener('mousedown', hideStartMessage, { passive: true });
+    document.addEventListener('touchstart', function() {
+        hideStartMessage();
+        hideSoundHint();
+    }, { passive: true });
+
+    document.addEventListener('mousedown', function() {
+        hideStartMessage();
+        hideSoundHint();
+    }, { passive: true });
+
+    (function initSoundHint() {
+        var hint = document.getElementById('soundHint');
+        if (!hint) return;
+        var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        if (!isTouch) {
+            hint.style.display = 'none';
+        }
+    })();
 </script>
     
 </html>
