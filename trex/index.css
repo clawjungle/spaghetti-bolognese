@@ -68,6 +68,24 @@ html, body {
   z-index: 1;
 }
 
+body.inverted {
+  background: #111;
+}
+
+body.inverted .interstitial-wrapper {
+  color: #f5f5f5;
+}
+
+body.inverted .controller {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+body.inverted .sound-hint {
+  background: rgba(20, 20, 20, 0.9);
+  color: rgba(255, 243, 224, 0.92);
+  border-color: rgba(255, 243, 224, 0.5);
+}
+
 #offline-resources {
   display: none;
 }
