@@ -87,6 +87,7 @@
       <div class="flex flex-wrap items-center gap-2 mb-4 text-sm">
         <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">Recipe: <strong id="progress">0%</strong></span>
         <button id="landscapeBtn" class="pixel-btn px-3 py-1 bg-sky-100 text-sky-800 hover:bg-sky-200">Fullscreen</button>
+        <button id="nightModeBtn" class="pixel-btn px-3 py-1 bg-slate-200 text-slate-800 hover:bg-slate-300">Night mode</button>
         <button id="cheatBtn" class="pixel-btn px-3 py-1 bg-amber-100 text-amber-800 hover:bg-amber-200">Cheat</button>
         <button id="resetProgressBtn" class="pixel-btn px-3 py-1 bg-red-100 text-red-700 hover:bg-red-200">Reset</button>
       </div>
@@ -194,6 +195,7 @@
     const blocks = [...document.querySelectorAll('.recipe-block')];
     const gameShell = document.getElementById('gameShell');
     const landscapeBtn = document.getElementById('landscapeBtn');
+    const nightModeBtn = document.getElementById('nightModeBtn');
     const exitLandscapeOverlay = document.getElementById('exitLandscapeOverlay');
     const cheatBtn = document.getElementById('cheatBtn');
     const resetProgressBtn = document.getElementById('resetProgressBtn');
@@ -300,6 +302,29 @@
           landscapeBtn.textContent = 'Fullscreen';
         });
       }
+    }
+
+    if (nightModeBtn) {
+      let forceNight = false;
+      nightModeBtn.addEventListener('click', () => {
+        forceNight = !forceNight;
+        try {
+          const win = frame.contentWindow;
+          const body = win && win.document && win.document.body;
+          if (body) {
+            body.classList.toggle('inverted', forceNight);
+          }
+          if (forceNight) {
+            nightModeBtn.textContent = 'Day mode';
+            nightModeBtn.classList.remove('bg-slate-200', 'text-slate-800', 'hover:bg-slate-300');
+            nightModeBtn.classList.add('bg-yellow-100', 'text-yellow-900', 'hover:bg-yellow-200');
+          } else {
+            nightModeBtn.textContent = 'Night mode';
+            nightModeBtn.classList.remove('bg-yellow-100', 'text-yellow-900', 'hover:bg-yellow-200');
+            nightModeBtn.classList.add('bg-slate-200', 'text-slate-800', 'hover:bg-slate-300');
+          }
+        } catch {}
+      });
     }
 
     if (cheatBtn) {
