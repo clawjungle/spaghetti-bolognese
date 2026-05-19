@@ -1402,10 +1402,24 @@
                             ctx.fillRect(x + w * 0.22, y + h * 0.42, w * 0.56, h * 0.42);
                         }
                     } else if (obstacleTheme === 'meatball') {
+                        // Spaghetti skewer variant.
                         ctx.fillStyle = '#7a3d1f';
                         ctx.fillRect(x + w * 0.46, y + h * 0.05, w * 0.08, h * 0.95);
-                        var r = Math.max(5, Math.min(w, h) * 0.22);
-                        var centers = [0.25, 0.52, 0.78];
+
+                        // Spaghetti bundle behind the meatballs.
+                        ctx.strokeStyle = '#f2d27c';
+                        ctx.lineWidth = Math.max(1, w * 0.05);
+                        var strands = [0.26, 0.37, 0.5, 0.63, 0.74];
+                        for (var s = 0; s < strands.length; s++) {
+                            var sy = y + h * strands[s];
+                            ctx.beginPath();
+                            ctx.moveTo(x + w * 0.22, sy);
+                            ctx.quadraticCurveTo(x + w * 0.5, sy - h * 0.12, x + w * 0.78, sy);
+                            ctx.stroke();
+                        }
+
+                        var r = Math.max(5, Math.min(w, h) * 0.2);
+                        var centers = [0.28, 0.54, 0.79];
                         for (var i = 0; i < centers.length; i++) {
                             var cy = y + h * centers[i];
                             var cx = x + w * 0.5;
