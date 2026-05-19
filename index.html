@@ -47,6 +47,20 @@
         height: 72vh;
       }
     }
+    body.force-landscape #gameShell {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vh;
+      height: 100vw;
+      z-index: 9999;
+      border-radius: 0;
+      transform: rotate(90deg) translateY(-100%);
+      transform-origin: top left;
+    }
+    body.force-landscape main > :not(#gameShell) {
+      visibility: hidden;
+    }
   </style>
 </head>
 <body class="bg-amber-50 text-stone-800">
@@ -215,30 +229,51 @@
       const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
       if (!isTouch) landscapeBtn.style.display = 'none';
 
+      const enterFallbackLandscape = () => {
+        document.body.classList.add('force-landscape');
+        landscapeBtn.textContent = 'Exit landscape';
+      };
+
+      const exitFallbackLandscape = () => {
+        document.body.classList.remove('force-landscape');
+        landscapeBtn.textContent = 'Landscape';
+      };
+
       landscapeBtn.addEventListener('click', async () => {
         if (!gameShell) return;
 
-        try {
-          if (!document.fullscreenElement) {
+        if (document.body.classList.contains('force-landscape')) {
+          exitFallbackLandscape();
+          return;
+        }
+
+        if (document.fullscreenElement) {
+          if (document.exitFullscreen) await document.exitFullscreen();
+          if (screen.orientation && screen.orientation.unlock) {
+            try { screen.orientation.unlock(); } catch {}
+          }
+          landscapeBtn.textContent = 'Landscape';
+          return;
+        }
+
+        if (gameShell.requestFullscreen) {
+          try {
             await gameShell.requestFullscreen();
             if (screen.orientation && screen.orientation.lock) {
               try { await screen.orientation.lock('landscape'); } catch {}
             }
             landscapeBtn.textContent = 'Exit landscape';
-          } else {
-            if (document.exitFullscreen) await document.exitFullscreen();
-            if (screen.orientation && screen.orientation.unlock) {
-              try { screen.orientation.unlock(); } catch {}
-            }
-            landscapeBtn.textContent = 'Landscape';
-          }
-        } catch {
-          alert('Landscape mode is not supported on this browser.');
+            return;
+          } catch {}
         }
+
+        enterFallbackLandscape();
       });
 
       document.addEventListener('fullscreenchange', () => {
-        if (!document.fullscreenElement) landscapeBtn.textContent = 'Landscape';
+        if (!document.fullscreenElement && !document.body.classList.contains('force-landscape')) {
+          landscapeBtn.textContent = 'Landscape';
+        }
       });
     }
 
