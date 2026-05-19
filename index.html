@@ -310,10 +310,10 @@
         forceNight = !forceNight;
         try {
           const win = frame.contentWindow;
-          const body = win && win.document && win.document.body;
-          if (body) {
-            body.classList.toggle('inverted', forceNight);
+          if (win && typeof win.setNightMode === 'function') {
+            win.setNightMode(forceNight ? 'night' : 'day');
           }
+
           if (forceNight) {
             nightModeBtn.textContent = 'Day mode';
             nightModeBtn.classList.remove('bg-slate-200', 'text-slate-800', 'hover:bg-slate-300');

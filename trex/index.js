@@ -98,6 +98,32 @@
     /** @const */
     var IS_TOUCH_ENABLED = 'ontouchstart' in window;
 
+    // null => automatic score-based cycle, true => force night, false => force day
+    window.__forceNightMode = null;
+
+    window.setNightMode = function (mode) {
+        if (mode === 'night') {
+            window.__forceNightMode = true;
+        } else if (mode === 'day') {
+            window.__forceNightMode = false;
+        } else {
+            window.__forceNightMode = null;
+        }
+
+        var runner = window.Runner && window.Runner.instance_;
+        if (runner && typeof runner.invert === 'function') {
+            if (window.__forceNightMode === null) {
+                var current = runner.distanceMeter
+                    ? runner.distanceMeter.getActualDistance(Math.ceil(runner.distanceRan))
+                    : 0;
+                runner.invertTrigger = current >= 1200 && current < 2000;
+            } else {
+                runner.invertTrigger = window.__forceNightMode;
+            }
+            runner.invert();
+        }
+    };
+
     /**
      * Default game configuration.
      * @enum {number}
@@ -603,6 +629,10 @@
                 var actualDistance =
                     this.distanceMeter.getActualDistance(Math.ceil(this.distanceRan));
                 var shouldBeNight = actualDistance >= 1200 && actualDistance < 2000;
+
+                if (window.__forceNightMode !== null) {
+                    shouldBeNight = !!window.__forceNightMode;
+                }
 
                 if (shouldBeNight !== this.inverted) {
                     this.invertTrigger = shouldBeNight;
