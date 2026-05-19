@@ -32,13 +32,22 @@
 </body>
 
 <script>
-    document.onkeydown = function(evt) {
-    evt = evt || window.event;
-    if (evt.keyCode == 32) {
+    function hideStartMessage() {
         var box = document.getElementById("messageBox");
-        box.style.visibility="hidden";
+        if (box) box.style.visibility = "hidden";
     }
-};
+
+    function okbuttonsend() {
+        hideStartMessage();
+    }
+
+    document.addEventListener('keydown', function(evt) {
+        evt = evt || window.event;
+        if (evt.keyCode === 32) hideStartMessage();
+    }, { passive: true });
+
+    document.addEventListener('touchstart', hideStartMessage, { passive: true });
+    document.addEventListener('mousedown', hideStartMessage, { passive: true });
 </script>
     
 </html>
