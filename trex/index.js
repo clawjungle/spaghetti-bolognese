@@ -599,10 +599,10 @@
                 }
 
                 // Score-gated day/night cycle.
-                // Night from 1400-1999, day again from 2000+.
+                // Night from 1200-1999, day again from 2000+.
                 var actualDistance =
                     this.distanceMeter.getActualDistance(Math.ceil(this.distanceRan));
-                var shouldBeNight = actualDistance >= 1400 && actualDistance < 2000;
+                var shouldBeNight = actualDistance >= 1200 && actualDistance < 2000;
 
                 if (shouldBeNight !== this.inverted) {
                     this.invertTrigger = shouldBeNight;
