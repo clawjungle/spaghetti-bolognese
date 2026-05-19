@@ -61,6 +61,12 @@
     body.force-landscape main > :not(#gameShell) {
       visibility: hidden;
     }
+    #exitLandscapeOverlay {
+      display: none;
+    }
+    body.force-landscape #exitLandscapeOverlay {
+      display: inline-flex;
+    }
   </style>
 </head>
 <body class="bg-amber-50 text-stone-800">
@@ -71,7 +77,8 @@
 
     </header>
 
-    <section id="gameShell" class="game-shell rounded-2xl overflow-hidden border border-amber-200 bg-white h-[46vh] md:h-[52vh] shadow">
+    <section id="gameShell" class="game-shell relative rounded-2xl overflow-hidden border border-amber-200 bg-white h-[46vh] md:h-[52vh] shadow">
+      <button id="exitLandscapeOverlay" class="pixel-btn absolute top-2 right-2 z-20 px-2 py-1 text-xs bg-red-100 text-red-800 hover:bg-red-200">Exit</button>
       <iframe id="gameFrame" src="./trex/index.html" title="Chromium T-Rex Runner"></iframe>
     </section>
 
@@ -186,6 +193,7 @@
     const blocks = [...document.querySelectorAll('.recipe-block')];
     const gameShell = document.getElementById('gameShell');
     const landscapeBtn = document.getElementById('landscapeBtn');
+    const exitLandscapeOverlay = document.getElementById('exitLandscapeOverlay');
     const cheatBtn = document.getElementById('cheatBtn');
     const resetProgressBtn = document.getElementById('resetProgressBtn');
 
@@ -275,6 +283,22 @@
           landscapeBtn.textContent = 'Landscape';
         }
       });
+
+      if (exitLandscapeOverlay) {
+        exitLandscapeOverlay.addEventListener('click', async () => {
+          if (document.body.classList.contains('force-landscape')) {
+            exitFallbackLandscape();
+            return;
+          }
+          if (document.fullscreenElement && document.exitFullscreen) {
+            await document.exitFullscreen();
+          }
+          if (screen.orientation && screen.orientation.unlock) {
+            try { screen.orientation.unlock(); } catch {}
+          }
+          landscapeBtn.textContent = 'Landscape';
+        });
+      }
     }
 
     if (cheatBtn) {
