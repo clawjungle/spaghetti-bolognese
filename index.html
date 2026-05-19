@@ -9,6 +9,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="icon" href="/favicon.ico">
   <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#ffffff" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { overflow-x: hidden; }
@@ -279,6 +280,12 @@
     }
 
     render(0, 0);
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
   </script>
 </body>
 </html>
