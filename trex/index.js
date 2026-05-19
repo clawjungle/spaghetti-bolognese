@@ -1391,7 +1391,7 @@
 
                     ctx.save();
 
-                    var drawContain = function (img, dx, dy, dw, dh, padRatio) {
+                    var drawContain = function (img, dx, dy, dw, dh, padRatio, alignBottom) {
                         var pad = (padRatio || 0) * Math.min(dw, dh);
                         var bw = Math.max(1, dw - pad * 2);
                         var bh = Math.max(1, dh - pad * 2);
@@ -1399,7 +1399,7 @@
                         var rw = Math.max(1, img.naturalWidth * scale);
                         var rh = Math.max(1, img.naturalHeight * scale);
                         var rx = dx + (dw - rw) / 2;
-                        var ry = dy + (dh - rh) / 2;
+                        var ry = alignBottom ? (dy + dh - rh) : (dy + (dh - rh) / 2);
                         ctx.drawImage(img, rx, ry, rw, rh);
                     };
 
@@ -1408,7 +1408,7 @@
                             ? packetSourceSprite
                             : (this.typeConfig.type === 'CACTUS_LARGE' ? packetTallSprite : packetSmallSprite);
                         if (packetSprite.complete && packetSprite.naturalWidth > 0) {
-                            drawContain(packetSprite, x, y, w, h, 0.02);
+                            drawContain(packetSprite, x, y, w, h, 0.02, true);
                         } else {
                             ctx.fillStyle = '#f6d365';
                             ctx.fillRect(x + w * 0.18, y + h * 0.08, w * 0.64, h * 0.9);
